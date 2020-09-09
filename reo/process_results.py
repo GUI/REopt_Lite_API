@@ -565,6 +565,18 @@ def process_results(self, dfm_list, data, meta, saveToDB=True):
             self.dm = dm
             self.inputs = inputs
 
+            # If the optimal system is approximately equal to the BAU system, set outputs to the BAU case.
+            system_eq_bau = True
+            pv_sizes = [key for key in results_dict.keys() if (key.lower().startswith('pv') and key.endswith('_kw'))]
+            for size_key in ['chp_kw', 'wind_kw', 'generator_kw', 'absorpchl_kw', 'batt_kw', 'batt_kwh',
+                             'hot_tes_size_mmbtu', 'cold_tes_size_kwht'] + pv_sizes:
+                # detect size of 1 Watt/Watt-hour/MMBTU or more
+                if abs(results_dict[size_key] - results_dict_bau[size_key]) > 1.0E-3:
+                    system_eq_bau = False
+                    break
+            if system_eq_bau:
+                results_dict = results_dict_bau.copy()
+
             # remove invalid sizes due to optimization error margins
             for r in [results_dict, results_dict_bau]:
                 for key, value in r.items():
