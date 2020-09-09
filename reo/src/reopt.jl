@@ -1015,6 +1015,7 @@ end
 
 
 function add_null_generator_results(m, p, r::Dict)
+	r["generator_kw"] = 0.0
 	r["gen_net_fixed_om_costs"] = 0
 	r["gen_net_variable_om_costs"] = 0
 	r["gen_total_fuel_cost"] = 0
@@ -1030,6 +1031,7 @@ function add_null_generator_results(m, p, r::Dict)
 end
 
 function add_null_wind_results(m, p, r::Dict)
+	r["wind_kw"] = 0.0
 	r["WINDtoLoad"] = []
 	r["WINDtoGrid"] = []
 	nothing
