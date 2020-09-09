@@ -571,9 +571,14 @@ def process_results(self, dfm_list, data, meta, saveToDB=True):
             for size_key in ['chp_kw', 'wind_kw', 'generator_kw', 'absorpchl_kw', 'batt_kw', 'batt_kwh',
                              'hot_tes_size_mmbtu', 'cold_tes_size_kwht'] + pv_sizes:
                 # detect size of 1 Watt/Watt-hour/MMBTU or more
-                if abs(results_dict[size_key] - results_dict_bau[size_key]) > 1.0E-3:
-                    system_eq_bau = False
-                    break
+                try:
+                    if abs(results_dict[size_key] - results_dict_bau[size_key]) > 1.0E-3:
+                        system_eq_bau = False
+                        break
+                except KeyError:
+                    if results_dict[size_key] > 1.0E-3:
+                        system_eq_bau = False
+                        break
             if system_eq_bau:
                 results_dict = results_dict_bau.copy()
 
@@ -1183,7 +1188,7 @@ def process_results(self, dfm_list, data, meta, saveToDB=True):
         results_object = Results(results_dict=dfm_list[0]['results'], results_dict_bau=dfm_list[1]['results_bau'],
                                  dm=dfm_list[0], inputs=data['inputs']['Scenario']['Site'])
         results = results_object.get_output()
-        
+
         # Move PV exported to grid during an outage to the curtailed PV series, doing this here so we have access to input data
         # Get outage start and end hour
         outage_start_hour= data['inputs']['Scenario']['Site']['LoadProfile'].get('outage_start_hour')
