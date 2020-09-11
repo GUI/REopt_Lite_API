@@ -1280,6 +1280,14 @@ function add_generator_results(m, p, r::Dict, update::Bool)
 		r["gen_year_one_fuel_cost"] = round(value(m[:TotalGeneratorFuelCharges]) / p.pwf_e, digits=2)
 		r["gen_year_one_variable_om_costs"] = round(value(m[:GenPerUnitProdOMCosts]) / (p.pwf_om * p.two_party_factor), digits=0)
 		r["gen_year_one_fixed_om_costs"] = round(value(m[:GenPerUnitSizeOMCosts]) / (p.pwf_om * p.two_party_factor), digits=0)
+	else
+		r["generator_kw"] = 0.0
+		r["gen_net_fixed_om_costs"] = 0.0
+		r["gen_net_variable_om_costs"] = 0.0
+		r["gen_total_fuel_cost"] = 0.0
+		r["gen_year_one_fuel_cost"] = 0.0
+		r["gen_year_one_variable_om_costs"] = 0.0
+		r["gen_year_one_fixed_om_costs"] = 0.0
 	end
 	
 	r["GENERATORtoBatt"] = round.(value.(m[:GENERATORtoBatt]), digits=3)
